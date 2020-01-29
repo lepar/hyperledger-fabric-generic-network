@@ -17,16 +17,35 @@ Requires versions 8.10 of node and 5.5.1 npm to be installed
 
 This network works only on Fabric 1.4.3 and it is up to production standards using Raft and TLS for secure communication
 
-To deploy a network simply run deploy.sh with 3 parameters:
+To deploy a network simply run the command  "./deploy.sh" in your terminal and tpye in the following information
+as it asks you in an interactive mode:
 
     - Organization Name
     - Organization Domain 
     - Host computers IP Address
 
 Example:
-./deploy.sh Org1 org1.com 192.168.0.0
+./deploy.sh
+
+Organization Name: Org1
+
+Organization Domain: org1.com
+
+Computer IP Address: 192.168.0.0
+
 
 To get the host computers ip address, you can run "hostname -I"
+
+
+If you encounter the error 
+
+"Error: could not assemble transaction, err proposal response was not successful, error code 500, msg error starting container: error starting container: API error (404): network hyperledger-fabric-generic-network_fabric not found"
+
+Then you must change the environment variable in the Peer Service in the the docker-compose.yml
+
+
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledgerfabricgenericnetwork_fabric 
+
 
 I am not responsible for the misuse of this generic code nor any damages that may occurr from improper use or development. 
 This code is open source and free for anyone to use for any type of project or application.

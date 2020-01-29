@@ -1,27 +1,37 @@
 #set -ev
 #!/bin/sh
 
-# Organization information that you wish to build and deploy
-export NAME_OF_ORGANIZATION=$1
-export DOMAIN_OF_ORGANIZATION=$2
-export HOST_COMPUTER_IP_ADDRESS=$3
-export ORGANIZATION_NAME_LOWERCASE=`echo "$NAME_OF_ORGANIZATION" | tr '[:upper:]' '[:lower:]'`
-export CA_ADDRESS_PORT=ca.$DOMAIN_OF_ORGANIZATION:7054
+function exportVariables(){
 
-# Security defaults
-# Couch DB credentials
-export COUCH_DB_USERNAME=admin
-export COUCH_DB_PASSWORD=adminpw
+  # Organization information that you wish to build and deploy
+  export NAME_OF_ORGANIZATION=$NAME_OF_ORGANIZATION
+  export DOMAIN_OF_ORGANIZATION=$DOMAIN_OF_ORGANIZATION
+  export HOST_COMPUTER_IP_ADDRESS=$HOST_COMPUTER_IP_ADDRESS
+  export ORGANIZATION_NAME_LOWERCASE=`echo "$NAME_OF_ORGANIZATION" | tr '[:upper:]' '[:lower:]'`
+  export CA_ADDRESS_PORT=ca.$DOMAIN_OF_ORGANIZATION:7054
 
-# Certificate authority credentials
-export CA_ADMIN_USER=admin
-export CA_ADMIN_PASSWORD=adminpw
+  # Security defaults
+  # Couch DB credentials
+  export COUCH_DB_USERNAME=admin
+  export COUCH_DB_PASSWORD=adminpw
 
-# Orderer credentials
-ORDERER_PASSWORD=adminpw
+  # Certificate authority credentials
+  export CA_ADMIN_USER=admin
+  export CA_ADMIN_PASSWORD=adminpw
 
-# Peer credentials
-PEER_PASSWORD=peerpw
+  # Orderer credentials
+  ORDERER_PASSWORD=adminpw
+
+  # Peer credentials
+  PEER_PASSWORD=peerpw
+
+}
+
+read -p "Organization Name: "  NAME_OF_ORGANIZATION
+read -p "Organization Domain: " DOMAIN_OF_ORGANIZATION
+read -p "Computer IP Address: " HOST_COMPUTER_IP_ADDRESS
+
+exportVariables
 
 ./clean-all.sh
 
