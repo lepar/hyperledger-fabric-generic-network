@@ -1,32 +1,33 @@
-version: '2'
+# SPDX-License-Identifier: Apache-2.0
+version: "2"
 
 networks:
   fabric:
 
 services:
   ca:
-      container_name: ca.${DOMAIN_OF_ORGANIZATION}
-      image: hyperledger/fabric-ca:1.4.3
-      command: sh -c 'fabric-ca-server start -d -b admin:adminpw --port 7054 --cfg.identities.allowremove'
-      environment:
-         - FABRIC_LOGGING_SPEC=grpc=debug:info        
-         - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca
-         - FABRIC_CA_SERVER_CLIENT=/etc/hyperledger/fabric-ca-client
-         - FABRIC_CA_CLIENT_TLS_CERTFILES=/etc/hyperledger/fabric-ca/tls-cert.pem
-         - FABRIC_CA_SERVER_TLS_ENABLED=true
-         - FABRIC_CA_SERVER_CA_NAME=ca.${DOMAIN_OF_ORGANIZATION}
-         - FABRIC_CA_SERVER_CSR_CN=ca.${DOMAIN_OF_ORGANIZATION}
-         - FABRIC_CA_SERVER_CSR_HOSTS=ca.${DOMAIN_OF_ORGANIZATION},${HOST_COMPUTER_IP_ADDRESS}
-         - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca/tlsca/ca.${ORGANIZATION_NAME_LOWERCASE}-key.pem
-         - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca/tlsca/ca.${ORGANIZATION_NAME_LOWERCASE}-cert.pem
-         - FABRIC_CA_SERVER_DEBUG=true
-      volumes:
-         - ./${ORGANIZATION_NAME_LOWERCASE}Ca/:/etc/hyperledger/fabric-ca
-         - ./${ORGANIZATION_NAME_LOWERCASE}Ca/server:/etc/hyperledger/fabric-ca-server
-         - ./${ORGANIZATION_NAME_LOWERCASE}Ca/client:/etc/hyperledger/fabric-ca-client
-         - ./ca-identity:/etc/hyperledger/artifacts
-      ports:
-         - 7054:7054
+    container_name: ca.${DOMAIN_OF_ORGANIZATION}
+    image: hyperledger/fabric-ca:1.4.3
+    command: sh -c 'fabric-ca-server start -d -b admin:adminpw --port 7054 --cfg.identities.allowremove'
+    environment:
+      - FABRIC_LOGGING_SPEC=grpc=debug:info
+      - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca
+      - FABRIC_CA_SERVER_CLIENT=/etc/hyperledger/fabric-ca-client
+      - FABRIC_CA_CLIENT_TLS_CERTFILES=/etc/hyperledger/fabric-ca/tls-cert.pem
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_CA_NAME=ca.${DOMAIN_OF_ORGANIZATION}
+      - FABRIC_CA_SERVER_CSR_CN=ca.${DOMAIN_OF_ORGANIZATION}
+      - FABRIC_CA_SERVER_CSR_HOSTS=ca.${DOMAIN_OF_ORGANIZATION},${HOST_COMPUTER_IP_ADDRESS}
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca/tlsca/ca.${ORGANIZATION_NAME_LOWERCASE}-key.pem
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca/tlsca/ca.${ORGANIZATION_NAME_LOWERCASE}-cert.pem
+      - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+      - ./${ORGANIZATION_NAME_LOWERCASE}Ca/:/etc/hyperledger/fabric-ca
+      - ./${ORGANIZATION_NAME_LOWERCASE}Ca/server:/etc/hyperledger/fabric-ca-server
+      - ./${ORGANIZATION_NAME_LOWERCASE}Ca/client:/etc/hyperledger/fabric-ca-client
+      - ./ca-identity:/etc/hyperledger/artifacts
+    ports:
+      - 7054:7054
 
   peer:
     container_name: peer.${DOMAIN_OF_ORGANIZATION}
@@ -43,7 +44,7 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/users/Admin@peer.${DOMAIN_OF_ORGANIZATION}/msp
       - CORE_PEER_ADDRESS=peer.${DOMAIN_OF_ORGANIZATION}:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer.${DOMAIN_OF_ORGANIZATION}:7051
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledgerfabricgenericnetwork_fabric 
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledgerfabricgenericnetwork_fabric
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=${COUCH_DB_USERNAME}
@@ -59,9 +60,9 @@ services:
       - 7051:7051
       - 7053:7053
     volumes:
-        - /var/run/:/host/var/run/
-        - ./crypto-config/peerOrganizations/:/etc/hyperledger/peer
-        - ./config:/etc/hyperledger/configtx
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/:/etc/hyperledger/peer
+      - ./config:/etc/hyperledger/configtx
     depends_on:
       - orderer
       - couchdb
@@ -99,12 +100,12 @@ services:
     working_dir: /etc/hyperledger
     command: /bin/bash
     volumes:
-        - /var/run/:/host/var/run/
-        - ./crypto-config/:/etc/hyperledger/crypto-config
-        - ./config:/etc/hyperledger/artifacts
-        - ./chaincode:/etc/hyperledger/chaincode
+      - /var/run/:/host/var/run/
+      - ./crypto-config/:/etc/hyperledger/crypto-config
+      - ./config:/etc/hyperledger/artifacts
+      - ./chaincode:/etc/hyperledger/chaincode
     networks:
-        - fabric
+      - fabric
     depends_on:
       - orderer
       - peer
@@ -137,9 +138,9 @@ services:
     ports:
       - 7050:7050
     volumes:
-        - ./config/:/etc/hyperledger/configtx
-        - ./crypto-config/ordererOrganizations/orderers/orderer1.${DOMAIN_OF_ORGANIZATION}/:/etc/hyperledger/orderer
-        - ./ordererConfig:/etc/hyperledger/ordererConfig
+      - ./config/:/etc/hyperledger/configtx
+      - ./crypto-config/ordererOrganizations/orderers/orderer1.${DOMAIN_OF_ORGANIZATION}/:/etc/hyperledger/orderer
+      - ./ordererConfig:/etc/hyperledger/ordererConfig
     networks:
       - fabric
 
@@ -150,7 +151,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=grpc=debug:info
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LEDGERTYPE=file      
+      - ORDERER_GENERAL_LEDGERTYPE=file
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=${NAME_OF_ORGANIZATION}OrdererMSP
@@ -170,9 +171,9 @@ services:
     ports:
       - 8050:8050
     volumes:
-        - ./config/:/etc/hyperledger/configtx
-        - ./crypto-config/ordererOrganizations/orderers/orderer2.${DOMAIN_OF_ORGANIZATION}/:/etc/hyperledger/orderer2
-        - ./ordererConfig2:/etc/hyperledger/ordererConfig2
+      - ./config/:/etc/hyperledger/configtx
+      - ./crypto-config/ordererOrganizations/orderers/orderer2.${DOMAIN_OF_ORGANIZATION}/:/etc/hyperledger/orderer2
+      - ./ordererConfig2:/etc/hyperledger/ordererConfig2
     networks:
       - fabric
 
@@ -183,7 +184,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=grpc=debug:info
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LEDGERTYPE=file      
+      - ORDERER_GENERAL_LEDGERTYPE=file
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=${NAME_OF_ORGANIZATION}OrdererMSP
@@ -203,8 +204,8 @@ services:
     ports:
       - 9050:9050
     volumes:
-        - ./config/:/etc/hyperledger/configtx
-        - ./crypto-config/ordererOrganizations/orderers/orderer3.${DOMAIN_OF_ORGANIZATION}/:/etc/hyperledger/orderer3
-        - ./ordererConfig3:/etc/hyperledger/ordererConfig3
+      - ./config/:/etc/hyperledger/configtx
+      - ./crypto-config/ordererOrganizations/orderers/orderer3.${DOMAIN_OF_ORGANIZATION}/:/etc/hyperledger/orderer3
+      - ./ordererConfig3:/etc/hyperledger/ordererConfig3
     networks:
       - fabric

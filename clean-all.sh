@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
 # Clean the container environment for deployment
 CONTAINER_IDS=$(docker ps -aq)
 if [ -z "$CONTAINER_IDS" -o "$CONTAINER_IDS" == " " ]; then

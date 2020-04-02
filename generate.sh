@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 CHANNEL_NAME=$1
