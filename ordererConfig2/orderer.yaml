@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 General:
-  LedgerType: file
   ListenAddress: 127.0.0.1
   ListenPort: 8050
 
@@ -41,7 +40,6 @@ General:
   #                 to dynamically generate a new genesis block.
   #  - file: Uses the file provided by GenesisFile as the genesis block.
   GenesisMethod: provisional
-  GenesisProfile: OrdererGenesis
   GenesisFile: genesisblock
 
   # LocalMSPDir is where to find the private crypto material needed by the
@@ -77,10 +75,6 @@ General:
 FileLedger:
   Location: /etc/hyperledger/production/orderer
   Prefix: hyperledger-fabric-ordererledger
-
-RAMLedger:
-  # History Size: The number of blocks that the RAM ledger is set to retain.
-  HistorySize: 1000
 
 Debug:
   # BroadcastTraceDir when set will cause each request to the Broadcast service for this orderer to be written to a file in this directory
