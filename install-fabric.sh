@@ -25,9 +25,9 @@ sudo apt update
 
 sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
 
-sudo apt -y install nodejs
-
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+
+sudo apt -y install nodejs
 
 sudo apt-get install npm
 
@@ -39,4 +39,4 @@ sudo tar -C /usr/local -xzf go1.11.12.linux-amd64.tar.gz
 
 rm go1.11.12.linux-amd64.tar.gz
 
-curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.0 2.2.0
+curl -sSL https://bit.ly/2ysbOFE | bash -s
