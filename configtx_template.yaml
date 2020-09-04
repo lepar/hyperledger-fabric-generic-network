@@ -14,7 +14,9 @@ Organizations:
         Type: Signature
         Rule: "OR('organization_nameOrdererMSP.admin')"
     OrdererEndpoints:
-      - orderer1.organization_domain:7050
+      - ip_address:7050
+      - ip_address:8050
+      - ip_address:9050
 
   - &organization_nameMSP
     Name: organization_nameMSP

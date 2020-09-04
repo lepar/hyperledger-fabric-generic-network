@@ -53,6 +53,6 @@ then
     fabric-ca-client certificate list --id Admin@orderer$NUMBER.$COMPANY_DOMAIN --store $ORDERER_DIRECTORY/msp/admincerts
 
     # tlscacerts --orderer
-    fabric-ca-client getcacert -u https://$CA_ADDRESS_PORT -M $ORDERER_DIRECTORY/msp --csr.hosts peer0.$COMPANY_DOMAIN,$ORDERER_IP_ADDRESS --enrollment.profile tls 
+    fabric-ca-client getcacert -u https://$CA_ADDRESS_PORT -M $ORDERER_DIRECTORY/msp --csr.hosts orderer$NUMBER.$COMPANY_DOMAIN,$ORDERER_IP_ADDRESS --enrollment.profile tls 
 
 fi
