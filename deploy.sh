@@ -97,14 +97,21 @@ docker exec cli peer channel create -o orderer1.$DOMAIN_OF_ORGANIZATION:7050 -c 
 # Joins the peer to the channel
 docker exec cli peer channel join -b ${ORGANIZATION_NAME_LOWERCASE}channel.block
 
+docker exec cli peer channel update -o orderer1.$DOMAIN_OF_ORGANIZATION:7050 -c ${ORGANIZATION_NAME_LOWERCASE}channel -f /etc/hyperledger/artifacts/${NAME_OF_ORGANIZATION}MSPanchors.tx --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/orderers/orderer1.$DOMAIN_OF_ORGANIZATION/tls/ca.crt
+
 # Package chaincode
 docker exec cli peer lifecycle chaincode package chaincode.tar.gz --path /etc/hyperledger/chaincode --lang node --label ccv1
 
 # Install the chaincode
 docker exec cli peer lifecycle chaincode install chaincode.tar.gz
 
+docker exec cli peer lifecycle chaincode queryinstalled >&log.txt
+export PACKAGE_ID=`sed -n '/Package/{s/^Package ID: //; s/, Label:.*$//; p;}' log.txt`
+
+echo $PACKAGE_ID
+
 # Approve chaincode for org
-docker exec cli peer lifecycle chaincode approveformyorg -o orderer1.$DOMAIN_OF_ORGANIZATION:7050 --ordererTLSHostnameOverride orderer1.$DOMAIN_OF_ORGANIZATION --channelID ${ORGANIZATION_NAME_LOWERCASE}channel --name chaincode --version 1.0 --sequence 1 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/orderers/orderer1.$DOMAIN_OF_ORGANIZATION/tls/ca.crt --package-id ccv1:80cc7121367d592f598038dbb2f4a355c02b8935645cd8016b869c278979a0a8
+docker exec cli peer lifecycle chaincode approveformyorg -o orderer1.$DOMAIN_OF_ORGANIZATION:7050 --ordererTLSHostnameOverride orderer1.$DOMAIN_OF_ORGANIZATION --channelID ${ORGANIZATION_NAME_LOWERCASE}channel --name chaincode --version 1.0 --sequence 1 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/orderers/orderer1.$DOMAIN_OF_ORGANIZATION/tls/ca.crt --package-id ${PACKAGE_ID}
 
 # Check commit readiness
 docker exec cli peer lifecycle chaincode checkcommitreadiness --channelID ${ORGANIZATION_NAME_LOWERCASE}channel --name chaincode --version 1.0 --sequence 1 --tls true --cafile /etc/hyperledger/crypto-config/ordererOrganizations/orderers/orderer1.$DOMAIN_OF_ORGANIZATION/tls/ca.crt --output json
