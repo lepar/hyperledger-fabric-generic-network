@@ -10,7 +10,7 @@ import * as fs from 'fs';
 import { safeLoad } from 'js-yaml';
 import { UserManager } from './UserManager';
 
-const connectionProfile = safeLoad(fs.readFileSync('connections.yml', 'utf8'));
+const connectionProfile = fs.readFileSync('connections.yml', 'utf8');
 const userManager: UserManager = new UserManager();
 
 export class ContractManager {

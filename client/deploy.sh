@@ -25,11 +25,11 @@ sed -e 's/HOST_COMPUTER_IP_ADDRESS/'$HOST_COMPUTER_IP_ADDRESS'/g' \
     -e 's/ORGANIZATION_NAME_LOWERCASE/'$ORGANIZATION_NAME_LOWERCASE'/g' \
     ./template/connections.yml > connections.yml
 
-sed -e 's/ORGANIZATION_/'$NAME_OF_ORGANIZATION'/g' \
+sed -e 's/ORGANIZATION_NAME/'$NAME_OF_ORGANIZATION'/g' \
     -e 's/ORGANIZATION_DOMAIN/'$DOMAIN_OF_ORGANIZATION'/g' \
     ./template/UserManager.ts > ./controllers/UserManager.ts
 
-sed -e 's/ORGANIZATION_NAME/'$NAME_OF_ORGANIZATION'/g' \
+sed -e 's/ORGANIZATION_NAME/'$ORGANIZATION_NAME_LOWERCASE'/g' \
     ./template/TransactionManager.ts > ./controllers/TransactionManager.ts
 
 # Get the certificates

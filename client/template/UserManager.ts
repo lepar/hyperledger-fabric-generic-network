@@ -12,8 +12,10 @@ const ccp = JSON.parse(ccpJSON);
 export class UserManager {
   public async enrollAdmin(req: Request, res: Response): Promise<void> {
     try {
+      console.log('CCP ', ccp);
       // Create a new CA client for interacting with the CA.
       const caInfo = ccp.certificateAuthorities['ca.ORGANIZATION_DOMAIN'];
+      console.log('caInfo ', caInfo);
       const caTLSCACerts = caInfo.tlsCACerts.pem;
       const ca = new FabricCAServices(
         caInfo.url,
@@ -45,7 +47,7 @@ export class UserManager {
         enrollmentSecret: 'adminpw'
       });
       const identity = X509WalletMixin.createIdentity(
-        'ORGANIZATION_MSP',
+        'ORGANIZATION_NAMEMSP',
         enrollment.certificate,
         enrollment.key.toBytes()
       );
