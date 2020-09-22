@@ -65,11 +65,11 @@ Application: &ApplicationDefaults
       Type: ImplicitMeta
       Rule: "MAJORITY Admins"
     LifecycleEndorsement:
-      Type: ImplicitMeta
-      Rule: "MAJORITY Endorsement"
+      Type: Signature
+      Rule: "OR('organization_nameMSP.member')"
     Endorsement:
-      Type: ImplicitMeta
-      Rule: "MAJORITY Endorsement"
+      Type: Signature
+      Rule: "OR('organization_nameMSP.member')"
   Capabilities:
     <<: *ApplicationCapabilities
 
