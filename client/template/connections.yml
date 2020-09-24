@@ -3,7 +3,7 @@ version: "1.0"
 x-type: "hlfv1"
 
 channels:
-    ORGANIZATION_CHANNELchannel:
+  ORGANIZATION_NAME_LOWERCASEchannel:
     orderers:
       - orderer1.DOMAIN_OF_ORGANIZATION
     peers:

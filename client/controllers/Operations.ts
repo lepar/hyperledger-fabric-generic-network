@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { Contract } from "fabric-network";
-import { ContractManager } from "../template/TransactionManager";
-
+import { ContractManager } from "./TransactionManager";
 
 export class OperationsManager {
   public async query(req: Request, res: Response) {
@@ -18,7 +17,7 @@ export class OperationsManager {
 
       const result = await contract.evaluateTransaction("queryBlockchain", key);
 
-      res.status(200).send(result);
+      res.status(200).send(result.toString());
       }
      catch (error) {
       console.log(error.toString());
@@ -31,9 +30,10 @@ export class OperationsManager {
       throw new Error("Invalid JSON, selector object is required");
     }
 
-    const user = req.body.user;
-    const key = req.body.key;
-    const data = req.body;
+    const user = req.body.user.toString();
+    const key = req.body.key.toString();
+    const data = req.body.toString();
+    
     try {
       const contractManager: ContractManager = new ContractManager();
       const contract: Contract = await contractManager.getContract(user, req, res);

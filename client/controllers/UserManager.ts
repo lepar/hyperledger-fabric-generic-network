@@ -3,7 +3,6 @@ import FabricCAServices from 'fabric-ca-client';
 import { FileSystemWallet, X509WalletMixin, Gateway } from 'fabric-network';
 import * as fs from 'fs';
 import { join, resolve } from 'path';
-import { safeLoad } from 'js-yaml';
 
 const ccpPath = resolve('connection-org.json');
 const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
@@ -12,10 +11,8 @@ const ccp = JSON.parse(ccpJSON);
 export class UserManager {
   public async enrollAdmin(req: Request, res: Response): Promise<void> {
     try {
-      console.log('CCP ', ccp);
       // Create a new CA client for interacting with the CA.
-      const caInfo = ccp.certificateAuthorities['ca.ORGANIZATION_DOMAIN'];
-      console.log('caInfo ', caInfo);
+      const caInfo = ccp.certificateAuthorities['ca.nick.com'];
       const caTLSCACerts = caInfo.tlsCACerts.pem;
       const ca = new FabricCAServices(
         caInfo.url,
@@ -47,7 +44,7 @@ export class UserManager {
         enrollmentSecret: 'adminpw'
       });
       const identity = X509WalletMixin.createIdentity(
-        'ORGANIZATION_NAMEMSP',
+        'NickMSP',
         enrollment.certificate,
         enrollment.key.toBytes()
       );
@@ -122,8 +119,14 @@ export class UserManager {
         enrollmentSecret: secret
       });
 
-      const userIdentity = X509WalletMixin.createIdentity('ORGANIZATION_MSP', enrollment.certificate, enrollment.key.toBytes());
+      const userIdentity = X509WalletMixin.createIdentity('NickMSP', enrollment.certificate, enrollment.key.toBytes());
       await wallet.import(`${user}`, userIdentity);
+
+      res
+      .status(200)
+      .send(
+        'Successfully registered user'
+      );
 
     } catch (error) {
       res.status(500).send(`User with the user ${error} already exists`);

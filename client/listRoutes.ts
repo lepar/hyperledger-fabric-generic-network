@@ -1,7 +1,7 @@
 'use strict';
 
 import { OperationsManager } from './controllers/Operations';
-import UserManager from './template/UserManager';
+import UserManager from './controllers/UserManager';
 
 
 module.exports = function(app: any) {

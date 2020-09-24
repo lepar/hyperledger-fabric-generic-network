@@ -12,25 +12,17 @@ sudo rm -rf ./wallet/*
 npm install
 
 # Update variables in template
-sed -e 's/HOST_COMPUTER_IP_ADDRESS/'$HOST_COMPUTER_IP_ADDRESS'/g' \
+sed -e 's/NAME_OF_ORGANIZATION/'$NAME_OF_ORGANIZATION'/g' \
     -e 's/DOMAIN_OF_ORGANIZATION/'$DOMAIN_OF_ORGANIZATION'/g' \
-    -e 's/NAME_OF_ORGANIZATION/'$NAME_OF_ORGANIZATION'/g' \
+    -e 's/HOST_COMPUTER_IP_ADDRESS/'$HOST_COMPUTER_IP_ADDRESS'/g' \
     -e 's/ORGANIZATION_NAME_LOWERCASE/'$ORGANIZATION_NAME_LOWERCASE'/g' \
-    -e 's/ORGANIZATION_CHANNEL/'${ORGANIZATION_NAME_LOWERCASE}'/g' \
     ./template/connection-org.json > connection-org.json
 
-sed -e 's/HOST_COMPUTER_IP_ADDRESS/'$HOST_COMPUTER_IP_ADDRESS'/g' \
+sed -e 's/NAME_OF_ORGANIZATION/'$NAME_OF_ORGANIZATION'/g' \
     -e 's/DOMAIN_OF_ORGANIZATION/'$DOMAIN_OF_ORGANIZATION'/g' \
-    -e 's/NAME_OF_ORGANIZATION/'$NAME_OF_ORGANIZATION'/g' \
+    -e 's/HOST_COMPUTER_IP_ADDRESS/'$HOST_COMPUTER_IP_ADDRESS'/g' \
     -e 's/ORGANIZATION_NAME_LOWERCASE/'$ORGANIZATION_NAME_LOWERCASE'/g' \
     ./template/connections.yml > connections.yml
-
-sed -e 's/ORGANIZATION_NAME/'$NAME_OF_ORGANIZATION'/g' \
-    -e 's/ORGANIZATION_DOMAIN/'$DOMAIN_OF_ORGANIZATION'/g' \
-    ./template/UserManager.ts > ./controllers/UserManager.ts
-
-sed -e 's/ORGANIZATION_NAME/'$ORGANIZATION_NAME_LOWERCASE'/g' \
-    ./template/TransactionManager.ts > ./controllers/TransactionManager.ts
 
 # Get the certificates
 cp ../${ORGANIZATION_NAME_LOWERCASE}Ca/tls-cert.pem .

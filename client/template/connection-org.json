@@ -13,7 +13,7 @@
       }
     },
     "channels": {
-      "NAME_OF_ORGANIZATIONchannel": {
+      "ORGANIZATION_NAME_LOWERCASEchannel": {
         "orderers": ["orderer.DOMAIN_OF_ORGANIZATION"],
         "peers": {
           "peer.DOMAIN_OF_ORGANIZATION": {}
