@@ -70,7 +70,7 @@ export class ContractManager {
     const gateway: Gateway = new Gateway();
     await gateway.connect(connectionProfile!, connectionOptions);
     // Get the network (channel) our contract is deployed to.
-    const network: Network = await gateway.getNetwork('channel');
+    const network: Network = await gateway.getNetwork('orgchannel');
     // Get the contract from the network.
     const contract: Contract = network.getContract('chaincode');
     return contract;

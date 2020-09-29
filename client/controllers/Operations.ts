@@ -17,7 +17,7 @@ export class OperationsManager {
 
       const result = await contract.evaluateTransaction("queryBlockchain", key);
 
-      res.status(200).send(result.toString());
+      res.status(200).send(JSON.parse(result.toString()));
       }
      catch (error) {
       console.log(error.toString());
@@ -32,15 +32,15 @@ export class OperationsManager {
 
     const user = req.body.user.toString();
     const key = req.body.key.toString();
-    const data = req.body.toString();
+    const data = req.body;
     
     try {
       const contractManager: ContractManager = new ContractManager();
       const contract: Contract = await contractManager.getContract(user, req, res);
 
-      const result = await contract.submitTransaction("invokeTransaction", key, data);
+      await contract.submitTransaction("invokeTransaction", key, JSON.stringify(data));
 
-      res.status(200).send(result.toString());
+      res.status(200).send('Succesfully invoked');
     } catch (error) {
       console.log(error.toString());
       res.status(500).send(error.toString());
