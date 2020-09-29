@@ -28,5 +28,7 @@ sed -e 's/NAME_OF_ORGANIZATION/'$NAME_OF_ORGANIZATION'/g' \
 cp ../${ORGANIZATION_NAME_LOWERCASE}Ca/tls-cert.pem .
 cp ../crypto-config/peerOrganizations/peers/peer.${DOMAIN_OF_ORGANIZATION}/tls/ca.crt ./
 
+./start-kong.sh $HOST_COMPUTER_IP_ADDRESS
+
 npm run build
 npm run start

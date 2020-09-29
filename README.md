@@ -64,6 +64,47 @@ To remove an organization
 
     - ./add-remove-org.sh remove ORG_NAME ORG_IP admin_org_domain CHANNEL_NAME AdminOrgName
 
+Node Client
+
+The node client is used to transact with the network using POST requests
+
+Two files must be modified to fit your networks name:
+
+client/controllers/TransactionManager.ts -> Modify the channel name
+
+client/controllers/UserManager.ts -> Modify organization domain in the enrollAdmin function and the organizations MSP in both
+enrollAdmin and registerUser functions
+
+The client API uses NodeExpress and uses port 3000. If you want to use Kong, just change the port to 8000
+
+The first step is to enroll the admin
+
+Endpoint: http://localhost:3000/enrollAdmin
+
+The second step is to register a user to interact with the network
+
+Endpoint: http://localhost:3000/registerUser
+
+JSON payload to send:
+
+{ "user": "userName" }
+
+There are two functions currently implemented:
+
+Invoke the chaincode and create a transaction in the network
+
+Endpoint: http://localhost:3000/invoke
+
+JSON Payload to send:
+
+{ "user": "userName", "key": "KeyForData", "data": "any data" }
+
+Query the blockchain
+
+Endpoint: http://localhost:3000/query
+
+{ "user": "userName", "key": "KeyForData", }
+
 I am not responsible for the misuse of this generic code nor any damages that may occurr from improper use or development.
 This code is open source and free for anyone to use for any type of project or application under the Apache-2.0 license
 

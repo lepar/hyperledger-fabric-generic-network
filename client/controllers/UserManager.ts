@@ -12,7 +12,7 @@ export class UserManager {
   public async enrollAdmin(req: Request, res: Response): Promise<void> {
     try {
       // Create a new CA client for interacting with the CA.
-      const caInfo = ccp.certificateAuthorities['ca.nick.com'];
+      const caInfo = ccp.certificateAuthorities['ca.example.com'];
       const caTLSCACerts = caInfo.tlsCACerts.pem;
       const ca = new FabricCAServices(
         caInfo.url,
@@ -44,7 +44,7 @@ export class UserManager {
         enrollmentSecret: 'adminpw'
       });
       const identity = X509WalletMixin.createIdentity(
-        'NickMSP',
+        'OrgMSP',
         enrollment.certificate,
         enrollment.key.toBytes()
       );
@@ -119,7 +119,7 @@ export class UserManager {
         enrollmentSecret: secret
       });
 
-      const userIdentity = X509WalletMixin.createIdentity('NickMSP', enrollment.certificate, enrollment.key.toBytes());
+      const userIdentity = X509WalletMixin.createIdentity('OrgMSP', enrollment.certificate, enrollment.key.toBytes());
       await wallet.import(`${user}`, userIdentity);
 
       res
