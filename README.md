@@ -9,6 +9,10 @@ It deploys a network with:
     - 1 CouchDB
     - 1 CLI
 
+Updates are continuously being pushed. Currently, you can choose between version 1.4 and 2.0. 
+
+Before proceeding, checkout to a version branch you wish to use
+
 Pre Requisites:
 Refer to https://hyperledger-fabric.readthedocs.io/en/release-1.4/prereqs.html
 
