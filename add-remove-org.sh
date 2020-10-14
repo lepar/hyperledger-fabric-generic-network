@@ -44,11 +44,17 @@ function addOrgChannel(){
 
     if [ $CHANNEL_NAME == "system-channel" ]; then
         # Add new Org MSP to Consortium channel group
-        jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Consortiums\":{\"groups\":{\"${ORG_ADMIN}Consortium\":{\"groups\": {\"${ORG_NAME}MSP\":.[1]}}}}}}}" modified_config1.json ${ORG_NAME}MSP.json > modified_config2.json
+        jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Consortiums\":{\"groups\":{\"${ORG_ADMIN}Consortium\":{\"groups\": {\"${ORG_NAME}MSP\":.[1]}}}}}}}" modified_config1.json ${ORG_NAME}MSP.json > modified_config5.json
 
     else
         echo "ADDING TO APPLI CHANNEL"
         jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\":{\"${ORG_NAME}MSP\":.[1]}}}}}" modified_config1.json ${ORG_NAME}MSP.json > modified_config2.json
+
+        # Add to Endorsement policy
+        jq '.channel_group.groups.Application.policies.Endorsement.policy.value.identities += [{"principal":{"msp_identifier": "'${ORG_NAME}'MSP","role": "MEMBER"},"principal_classification": "ROLE"}]' modified_config2.json > modified_config3.json
+
+        # Add to LifecycleEndorsement lists
+        jq '.channel_group.groups.Application.policies.LifecycleEndorsement.policy.value.identities += [{"principal":{"msp_identifier": "'${ORG_NAME}'MSP","role": "MEMBER"},"principal_classification": "ROLE"}]' modified_config3.json > modified_config5.json
     fi
 
     # Add to consenters list
@@ -57,7 +63,7 @@ function addOrgChannel(){
     TLS_FILE=server.crt
     echo "{\"client_tls_cert\":\"$(cat $TLS_FILE | base64 $FLAG)\",\"host\":\"$ORGANIZATION_IP_ADDRESS\",\"port\":7050,\"server_tls_cert\":\"$(cat $TLS_FILE | base64 $FLAG)\"}" > $PWD/new-consenter.json
 
-    jq ".channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters += [$(cat new-consenter.json)]" modified_config2.json > modified_config_final.json
+    jq ".channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters += [$(cat new-consenter.json)]" modified_config5.json > modified_config_final.json
 
 }
 
