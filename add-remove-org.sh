@@ -44,18 +44,19 @@ function addOrgChannel(){
 
     if [ $CHANNEL_NAME == "system-channel" ]; then
         # Add new Org MSP to Consortium channel group
-        jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Consortiums\":{\"groups\":{\"${ORG_ADMIN}Consortium\":{\"groups\": {\"${ORG_NAME}MSP\":.[1]}}}}}}}" modified_config1.json ${ORG_NAME}MSP.json > modified_config5.json
+        jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Consortiums\":{\"groups\":{\"${ORG_ADMIN}Consortium\":{\"groups\": {\"${ORG_NAME}MSP\":.[1]}}}}}}}" modified_config1.json ${ORG_NAME}MSP.json > modified_config4.json
 
     else
-        echo "ADDING TO APPLI CHANNEL"
+        echo "ADDING TO APPLICATION CHANNEL"
         jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\":{\"${ORG_NAME}MSP\":.[1]}}}}}" modified_config1.json ${ORG_NAME}MSP.json > modified_config2.json
 
-        # Add to Endorsement policy
+         # Add to Endorsement policy
         jq '.channel_group.groups.Application.policies.Endorsement.policy.value.identities += [{"principal":{"msp_identifier": "'${ORG_NAME}'MSP","role": "MEMBER"},"principal_classification": "ROLE"}]' modified_config2.json > modified_config3.json
 
         # Add to LifecycleEndorsement lists
-        jq '.channel_group.groups.Application.policies.LifecycleEndorsement.policy.value.identities += [{"principal":{"msp_identifier": "'${ORG_NAME}'MSP","role": "MEMBER"},"principal_classification": "ROLE"}]' modified_config3.json > modified_config5.json
-    fi
+        jq '.channel_group.groups.Application.policies.LifecycleEndorsement.policy.value.identities += [{"principal":{"msp_identifier": "'${ORG_NAME}'MSP","role": "MEMBER"},"principal_classification": "ROLE"}]' modified_config3.json > modified_config4.json
+
+      fi
 
     # Add to consenters list
     export FLAG=$(if [ "$(uname -s)" == "Linux" ]; then echo "-w 0"; else echo "-b 0"; fi)
@@ -63,20 +64,42 @@ function addOrgChannel(){
     TLS_FILE=server.crt
     echo "{\"client_tls_cert\":\"$(cat $TLS_FILE | base64 $FLAG)\",\"host\":\"$ORGANIZATION_IP_ADDRESS\",\"port\":7050,\"server_tls_cert\":\"$(cat $TLS_FILE | base64 $FLAG)\"}" > $PWD/new-consenter.json
 
-    jq ".channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters += [$(cat new-consenter.json)]" modified_config5.json > modified_config_final.json
+    jq ".channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters += [$(cat new-consenter.json)]" modified_config4.json > modified_config_final.json
 
 }
 
-function removeOrg(){
+function removeOrgSystemChannel(){
     # Delete organization from Consortium and Orderer values
     jq "del(.channel_group.groups.Consortiums.groups.${ORG_ADMIN}Consortium.groups.${ORG_NAME}MSP)" config.json > modified_config.json
     jq "del(.channel_group.groups.Orderer.groups.${ORG_NAME}OrdererMSP)" modified_config.json > modified_config1.json
 
     # Remove organizations IP Address
-    jq '.channel_group.values.OrdererAddresses.value.addresses |= map(select(. != '\"$ORGANIZATION_IP_ADDRESS\"'))' modified_config1.json > modified_config2.json
+    jq '.channel_group.values.OrdererAddresses.value.addresses |= map(select( test('\"$ORGANIZATION_IP_ADDRESS':7050'\"') | not))' modified_config1.json > modified_config2.json   
 
     # Remove organization from consenters
-    jq '.channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters |= map(select(.host != '\"$ORGANIZATION_IP_ADDRESS\"'))' modified_config2.json > modified_config_final.json
+    jq 'del(.channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters[] | select(.host == '\"$ORGANIZATION_IP_ADDRESS\"'))' modified_config2.json > modified_config_final.json
+
+}
+
+function removeOrgApplicationChannel(){
+    # Delete organization from Application group
+    jq "del(.channel_group.groups.Application.groups.${ORG_NAME}MSP)" config.json > modified_config.json
+
+    # Delete organization from Endorsement policy
+    jq 'del(.channel_group.groups.Application.policies.Endorsement.policy.value.identities[] | select(.principal.msp_identifier == "'${ORG_NAME}'MSP"))' modified_config.json > modified_config1.json
+
+    # Delete organization from Lifecycle Endorsement
+    jq 'del(.channel_group.groups.Application.policies.LifecycleEndorsement.policy.value.identities[] | select(.principal.msp_identifier == "'${ORG_NAME}'MSP"))' modified_config1.json > modified_config2.json
+
+    # Delete organization from Orderer group
+    jq "del(.channel_group.groups.Orderer.groups.${ORG_NAME}OrdererMSP)" modified_config2.json > modified_config3.json
+
+    # Remove organizations IP Address
+    jq '.channel_group.values.OrdererAddresses.value.addresses |= map(select( test('\"$ORGANIZATION_IP_ADDRESS':7050'\"') | not))' modified_config3.json > modified_config4.json   
+
+    # Remove organization from consenters
+    jq 'del(.channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters[] | select(.host == '\"$ORGANIZATION_IP_ADDRESS\"'))' modified_config4.json > modified_config_final.json
+
 
 }
 
@@ -141,7 +164,7 @@ elif [ $OPERATION == "remove" ]; then
     export CHANNEL_NAME='system-channel'
     ordererEnvVariables
     fetchConfigBlock
-    removeOrg
+    removeOrgSystemChannel
     sendUpdate
 
     sleep 5
@@ -150,9 +173,8 @@ elif [ $OPERATION == "remove" ]; then
     export CHANNEL_NAME=$CHANNEL
     peerEnvVariablesForBlock
     fetchConfigBlock
-    removeOrg
+    removeOrgApplicationChannel
     sendUpdate
 
     popd
 fi
-
