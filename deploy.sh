@@ -83,6 +83,14 @@ sudo rm -rf $PEER_DIRECTORY/tls/{cacerts,keystore,signcerts,tlscacerts,user}
 ./generate.sh ${ORGANIZATION_NAME_LOWERCASE}channel $NAME_OF_ORGANIZATION
 sleep 2
 
+cp add-remove-org.sh config/
+
+sed -e 's/ORG_ADMIN/'$NAME_OF_ORGANIZATION'/g' \
+    -e 's/ORG_ADMIN_DOMAIN/'$DOMAIN_OF_ORGANIZATION'/g' \
+    -e 's/CHANNEL_NAME/'${ORGANIZATION_NAME_LOWERCASE}channel}'/g' \
+    ./templates/addToChannel.sh > addToChannel.sh
+
+
 # Start the network with docker-compose
 docker-compose -f docker-compose.yml up -d peer couchdb cli 
 sleep 2
