@@ -90,6 +90,7 @@ sed -e 's/ORG_ADMIN_NAME/'$NAME_OF_ORGANIZATION'/g' \
     -e 's/CHANNEL_NAME/'${ORGANIZATION_NAME_LOWERCASE}channel}'/g' \
     ./templates/addToChannel.sh > addToChannel.sh
 
+sudo chmod +x addToChannel.sh
 
 # Start the network with docker-compose
 docker-compose -f docker-compose.yml up -d peer couchdb cli 
