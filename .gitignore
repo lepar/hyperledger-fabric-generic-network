@@ -1,7 +1,6 @@
 config/
 configtx.yaml
 crypto-config/
-fabric-join/start-orderer.sh
 log.txt
 testCa/
 addToChannel.sh
