@@ -87,7 +87,7 @@ cp add-remove-org.sh config/
 
 sed -e 's/ORG_ADMIN_NAME/'$NAME_OF_ORGANIZATION'/g' \
     -e 's/ORG_ADMIN_DOMAIN/'$DOMAIN_OF_ORGANIZATION'/g' \
-    -e 's/CHANNEL_NAME/'${ORGANIZATION_NAME_LOWERCASE}channel}'/g' \
+    -e 's/CHANNEL_NAME/'${ORGANIZATION_NAME_LOWERCASE}channel'/g' \
     ./templates/addToChannel.sh > addToChannel.sh
 
 sudo chmod +x addToChannel.sh
