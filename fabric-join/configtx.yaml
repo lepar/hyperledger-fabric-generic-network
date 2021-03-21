@@ -1,0 +1,156 @@
+Organizations:
+  - &TestOrdererMSP
+    Name: TestOrdererMSP
+    ID: TestOrdererMSP
+    MSPDir: crypto-config/ordererOrganizations/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('TestOrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('TestOrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('TestOrdererMSP.admin')"
+    OrdererEndpoints:
+      - 192.168.1.109:7050
+
+  - &TestMSP
+    Name: TestMSP
+    ID: TestMSP
+    MSPDir: crypto-config/peerOrganizations/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('TestMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('TestMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('TestMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('TestMSP.member')"
+
+    # leave this flag set to true.
+    AnchorPeers:
+      - Host: 192.168.1.109
+        Port: 7051
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V1_4_2: true
+    V2_0: true
+  Orderer: &OrdererCapabilities
+    V2_0: true
+    V1_4_2: true
+  Application: &ApplicationCapabilities
+    V2_0: true
+    V1_4_2: true
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Endorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+  OrdererType: etcdraft
+  Addresses:
+    - 192.168.1.109:7050
+    - 192.168.1.109:8050
+    - 192.168.1.109:9050
+  EtcdRaft:
+    Consenters:
+      - Host: 192.168.1.109
+        Port: 7050
+        ClientTLSCert: crypto-config/ordererOrganizations/orderers/orderer.test.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/orderers/orderer.test.com/tls/server.crt
+      - Host: 192.168.1.109
+        Port: 8050
+        ClientTLSCert: crypto-config/ordererOrganizations/orderers/orderer2.test.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/orderers/orderer2.test.com/tls/server.crt
+      - Host: 192.168.1.109
+        Port: 9050
+        ClientTLSCert: crypto-config/ordererOrganizations/orderers/orderer3.test.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/orderers/orderer3.test.com/tls/server.crt
+
+  BatchTimeout: 2s
+
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+
+  Organizations:
+
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "ANY Admins"
+
+  Capabilities:
+    <<: *ChannelCapabilities
+
+Profiles:
+  OrdererGenesis:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *TestOrdererMSP
+      Capabilities:
+        <<: *OrdererCapabilities
+    Consortiums:
+      TestConsortium:
+        Organizations:
+          - *TestMSP
+
+  Channel:
+    Consortium: TestConsortium
+    <<: *ChannelDefaults
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *TestMSP
+      Capabilities:
+        <<: *ApplicationCapabilities

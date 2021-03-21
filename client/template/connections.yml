@@ -1,0 +1,52 @@
+name: "NAME_OF_ORGANIZATION-network"
+version: "1.0"
+x-type: "hlfv1"
+
+channels:
+  ORGANIZATION_NAME_LOWERCASEchannel:
+    orderers:
+      - orderer1.DOMAIN_OF_ORGANIZATION
+    peers:
+      peer.DOMAIN_OF_ORGANIZATION:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+        discover: true
+
+organizations:
+  NAME_OF_ORGANIZATION:
+    mspid: NAME_OF_ORGANIZATIONMSP
+    peers:
+      - peer.DOMAIN_OF_ORGANIZATION
+    certificateAuthorities:
+      - ca.DOMAIN_OF_ORGANIZATION
+
+orderers:
+  orderer1.DOMAIN_OF_ORGANIZATION:
+    url: grpcs://HOST_COMPUTER_IP_ADDRESS:7050
+    grpcOptions:
+      ssl-target-name-override: orderer1.DOMAIN_OF_ORGANIZATION
+      grpc-max-send-message-length: -1
+    tlsCACerts:
+      path: ca.crt
+
+peers:
+  peer.DOMAIN_OF_ORGANIZATION:
+    url: grpcs://HOST_COMPUTER_IP_ADDRESS:7051
+    eventUrl: grpcs://HOST_COMPUTER_IP_ADDRESS:7053
+    grpcOptions:
+      ssl-target-name-override: peer.DOMAIN_OF_ORGANIZATION
+      grpc.keepalive_time_ms: 120001
+    tlsCACerts:
+      path: ca.crt
+
+certificateAuthorities:
+  ca.DOMAIN_OF_ORGANIZATION:
+    url: https://HOST_COMPUTER_IP_ADDRESS:7054
+    httpOptions:
+      verify: false
+    registrar:
+      - enrollId: admin
+        enrollSecret: adminpw
+    caName: ca.DOMAIN_OF_ORGANIZATION

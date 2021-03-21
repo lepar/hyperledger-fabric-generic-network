@@ -1,0 +1,158 @@
+Organizations:
+  - &organization_nameOrdererMSP
+    Name: organization_nameOrdererMSP
+    ID: organization_nameOrdererMSP
+    MSPDir: crypto-config/ordererOrganizations/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('organization_nameOrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('organization_nameOrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('organization_nameOrdererMSP.admin')"
+    OrdererEndpoints:
+      - ip_address:7050
+      - ip_address:8050
+      - ip_address:9050
+
+  - &organization_nameMSP
+    Name: organization_nameMSP
+    ID: organization_nameMSP
+    MSPDir: crypto-config/peerOrganizations/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('organization_nameMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('organization_nameMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('organization_nameMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('organization_nameMSP.member')"
+
+    # leave this flag set to true.
+    AnchorPeers:
+      - Host: ip_address
+        Port: 7051
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V1_4_2: true
+    V2_0: true
+  Orderer: &OrdererCapabilities
+    V2_0: true
+    V1_4_2: true
+  Application: &ApplicationCapabilities
+    V2_0: true
+    V1_4_2: true
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    LifecycleEndorsement:
+      Type: Signature
+      Rule: "OR('organization_nameMSP.member')"
+    Endorsement:
+      Type: Signature
+      Rule: "OR('organization_nameMSP.member')"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+  OrdererType: etcdraft
+  Addresses:
+    - ip_address:7050
+    - ip_address:8050
+    - ip_address:9050
+  EtcdRaft:
+    Consenters:
+      - Host: ip_address
+        Port: 7050
+        ClientTLSCert: crypto-config/ordererOrganizations/orderers/orderer1.organization_domain/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/orderers/orderer1.organization_domain/tls/server.crt
+      - Host: ip_address
+        Port: 8050
+        ClientTLSCert: crypto-config/ordererOrganizations/orderers/orderer2.organization_domain/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/orderers/orderer2.organization_domain/tls/server.crt
+      - Host: ip_address
+        Port: 9050
+        ClientTLSCert: crypto-config/ordererOrganizations/orderers/orderer3.organization_domain/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/orderers/orderer3.organization_domain/tls/server.crt
+
+  BatchTimeout: 2s
+
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+
+  Organizations:
+
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "ANY Admins"
+
+  Capabilities:
+    <<: *ChannelCapabilities
+
+Profiles:
+  OrdererGenesis:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *organization_nameOrdererMSP
+      Capabilities:
+        <<: *OrdererCapabilities
+    Consortiums:
+      organization_nameConsortium:
+        Organizations:
+          - *organization_nameMSP
+
+  Channel:
+    Consortium: organization_nameConsortium
+    <<: *ChannelDefaults
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *organization_nameMSP
+      Capabilities:
+        <<: *ApplicationCapabilities
