@@ -1,0 +1,62 @@
+{
+    "name": "NAME_OF_ORGANIZATION-network",
+    "version": "1.0.0",
+    "client": {
+      "organization": "NAME_OF_ORGANIZATION",
+      "connection": {
+        "timeout": {
+          "peer": {
+            "endorser": "300"
+          },
+          "orderer": "300"
+        }
+      }
+    },
+    "channels": {
+      "ORGANIZATION_NAME_LOWERCASEchannel": {
+        "orderers": ["orderer.DOMAIN_OF_ORGANIZATION"],
+        "peers": {
+          "peer.DOMAIN_OF_ORGANIZATION": {}
+        }
+      }
+    },
+    "organizations": {
+      "NAME_OF_ORGANIZATION": {
+        "mspid": "NAME_OF_ORGANIZATIONMSP",
+        "peers": ["peer.DOMAIN_OF_ORGANIZATION"],
+        "certificateAuthorities": ["ca.DOMAIN_OF_ORGANIZATION"]
+      }
+    },
+    "orderers": {
+      "orderer.DOMAIN_OF_ORGANIZATION": {
+        "url": "grpcs://HOST_COMPUTER_IP_ADDRESS:7050"
+      }
+    },
+    "peers": {
+      "peer.DOMAIN_OF_ORGANIZATION": {
+        "url": "grpcs://HOST_COMPUTER_IP_ADDRESS:7051",
+        "tlsCACerts": {
+          "pem": "ca.crt"
+        }
+      }
+    },
+    "certificateAuthorities": {
+      "ca.DOMAIN_OF_ORGANIZATION": {
+        "url": "https://HOST_COMPUTER_IP_ADDRESS:7054",
+        "caName": "ca.DOMAIN_OF_ORGANIZATION",
+        "httpOptions": {
+          "verify": false
+        },
+        "tlsCACerts": {
+          "pem": "tls-cert.pem"
+        },
+        "registrar": [
+          {
+            "enrollId": "admin",
+            "enrollSecret": "adminpw"
+          }
+        ]
+      }
+    }
+  }
+  
