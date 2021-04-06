@@ -140,7 +140,7 @@ Profiles:
           <<: *OrdererDefaults
           OrdererType: etcdraft
           Organizations:
-              - <<: *organization_nameOrdererMSP
+              - <<: *organization_nameOrdererMSPPolicies
                 Policies:
                     <<: *TestOrdererMSPPolicies
                     Admins:
