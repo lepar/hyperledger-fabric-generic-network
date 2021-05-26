@@ -14,7 +14,7 @@ Refer to https://hyperledger-fabric.readthedocs.io/en/release-1.4/prereqs.html
 
 Requires versions 8.10 of node and 5.5.1 npm to be installed
 
-This network works only on Fabric 1.4.3 and it is up to production standards using Raft and TLS for secure communication
+This network work only on Fabric 2.3 and it is up to production standards using Raft and TLS for secure communication
 
 To deploy a network simply run the command "./deploy.sh" in your terminal and tpye in the following information
 as it asks you in an interactive mode:
