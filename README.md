@@ -12,7 +12,7 @@ It deploys a network with:
 Pre Requisites:
 Refer to https://hyperledger-fabric.readthedocs.io/en/release-1.4/prereqs.html
 
-Requires versions 8.10 of node and 5.5.1 npm to be installed
+Requires versions 12.19 of node and 6.14.8 npm to be installed
 
 This network work only on Fabric 2.3 and it is up to production standards using Raft and TLS for secure communication
 
