@@ -140,9 +140,9 @@ Profiles:
           <<: *OrdererDefaults
           OrdererType: etcdraft
           Organizations:
-              - <<: *organization_nameOrdererMSPPolicies
+              - <<: *organization_nameOrdererMSP
                 Policies:
-                    <<: *TestOrdererMSPPolicies
+                    <<: *organization_nameOrdererMSPPolicies
                     Admins:
                         Type: Signature
                         Rule: "OR('organization_nameOrdererMSP.member')"
