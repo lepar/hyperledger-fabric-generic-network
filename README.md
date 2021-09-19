@@ -9,6 +9,8 @@ It deploys a network with:
     - 1 CouchDB
     - 1 CLI
 
+** For working with privateData, you must deploy a second peer  
+
 Pre Requisites:
 Refer to https://hyperledger-fabric.readthedocs.io/en/release-1.4/prereqs.html
 
@@ -31,6 +33,7 @@ Organization Name: Org1
 Organization Domain: org1.com
 
 Computer IP Address: 192.168.0.0
+
 
 To get the host computers ip address, you can run "hostname -I"
 
@@ -68,18 +71,13 @@ Node Client
 
 The node client is used to transact with the network using POST requests
 
-Two files must be modified to fit your networks name:
-
-client/controllers/TransactionManager.ts -> Modify the channel name
-
-client/controllers/UserManager.ts -> Modify organization domain in the enrollAdmin function and the organizations MSP in both
-enrollAdmin and registerUser functions
-
 The client API uses NodeExpress and uses port 3000. If you want to use Kong, just change the port to 8000
+
 
 The first step is to enroll the admin
 
 Endpoint: http://localhost:3000/enrollAdmin
+
 
 The second step is to register a user to interact with the network
 
@@ -89,7 +87,9 @@ JSON payload to send:
 
 { "user": "userName" }
 
+
 There are two functions currently implemented:
+
 
 Invoke the chaincode and create a transaction in the network
 
@@ -99,6 +99,7 @@ JSON Payload to send:
 
 { "user": "userName", "key": "KeyForData", "data": "any data" }
 
+
 Query the blockchain
 
 Endpoint: http://localhost:3000/query
@@ -107,6 +108,7 @@ Endpoint: http://localhost:3000/query
 
 I am not responsible for the misuse of this generic code nor any damages that may occurr from improper use or development.
 This code is open source and free for anyone to use for any type of project or application under the Apache-2.0 license
+
 
 Feel free to email me with questions or suggestions
 

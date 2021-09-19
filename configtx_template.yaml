@@ -3,7 +3,7 @@ Organizations:
     Name: organization_nameOrdererMSP
     ID: organization_nameOrdererMSP
     MSPDir: crypto-config/ordererOrganizations/msp
-    Policies:
+    Policies: &organization_nameOrdererMSPPolicies
       Readers:
         Type: Signature
         Rule: "OR('organization_nameOrdererMSP.member')"
@@ -22,7 +22,7 @@ Organizations:
     Name: organization_nameMSP
     ID: organization_nameMSP
     MSPDir: crypto-config/peerOrganizations/msp
-    Policies:
+    Policies: &organization_nameMSPPolicies
       Readers:
         Type: Signature
         Rule: "OR('organization_nameMSP.member')"
@@ -134,25 +134,28 @@ Channel: &ChannelDefaults
     <<: *ChannelCapabilities
 
 Profiles:
-  OrdererGenesis:
-    <<: *ChannelDefaults
-    Orderer:
-      <<: *OrdererDefaults
-      Organizations:
-        - *organization_nameOrdererMSP
-      Capabilities:
-        <<: *OrdererCapabilities
-    Consortiums:
-      organization_nameConsortium:
-        Organizations:
-          - *organization_nameMSP
-
   Channel:
-    Consortium: organization_nameConsortium
-    <<: *ChannelDefaults
-    Application:
-      <<: *ApplicationDefaults
-      Organizations:
-        - *organization_nameMSP
-      Capabilities:
-        <<: *ApplicationCapabilities
+      <<: *ChannelDefaults
+      Orderer:
+          <<: *OrdererDefaults
+          OrdererType: etcdraft
+          Organizations:
+              - <<: *organization_nameOrdererMSP
+                Policies:
+                    <<: *organization_nameOrdererMSPPolicies
+                    Admins:
+                        Type: Signature
+                        Rule: "OR('organization_nameOrdererMSP.member')"
+          Capabilities:
+            <<: *OrdererCapabilities
+      Application:
+          <<: *ApplicationDefaults
+          Organizations:
+              - <<: *organization_nameMSP
+                Policies:
+                    <<: *organization_nameMSPPolicies
+                    Admins:
+                        Type: Signature
+                        Rule: "OR('organization_nameMSP.member')"
+          Capabilities:
+            <<: *ApplicationCapabilities

@@ -8,21 +8,20 @@ export class OperationsManager {
       throw new Error("Invalid JSON");
     }
 
-    const user = req.body.user;
-    const key = req.body.key;
+    const contractManager: ContractManager = new ContractManager();
+    const { user, key } = req.body;
 
     try {
-      const contractManager: ContractManager = new ContractManager();
       const contract: Contract = await contractManager.getContract(user, req, res);
-
       const result = await contract.evaluateTransaction("queryBlockchain", key);
-
       res.status(200).send(JSON.parse(result.toString()));
-      }
-     catch (error) {
-      console.log(error.toString());
-      res.status(500).send(error.toString());
     }
+    catch (error) {
+      console.log(error);
+      res.status(500).send(error);
+    }
+
+    contractManager.disconnect();
   }
 
   public async invoke(req: Request, res: Response) {
@@ -30,23 +29,21 @@ export class OperationsManager {
       throw new Error("Invalid JSON, selector object is required");
     }
 
-    const user = req.body.user.toString();
-    const key = req.body.key.toString();
+    const { user, key } = req.body;
     const data = req.body;
-    
+
     try {
       const contractManager: ContractManager = new ContractManager();
       const contract: Contract = await contractManager.getContract(user, req, res);
 
-      await contract.submitTransaction("invokeTransaction", key, JSON.stringify(data));
+      const result = await contract.submitTransaction("invokeTransaction", key, JSON.stringify(data));
 
-      res.status(200).send('Succesfully invoked');
+      res.status(200).send(result);
     } catch (error) {
-      console.log(error.toString());
-      res.status(500).send(error.toString());
+      console.log(error);
+      res.status(500).send(error);
     }
   }
-
 }
 
 export default OperationsManager;

@@ -1,7 +1,7 @@
 {
-  "name": "fabric",
+  "name": "mesou",
   "version": "1.0.0",
-  "description": "fabric",
+  "description": "mesou",
   "main": "index.js",
   "scripts": {
     "start": "node dist/server.js",
@@ -10,19 +10,25 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.2",
+    "@types/papaparse": "^5.2.5",
     "nodemon": "^1.18.1"
   },
   "dependencies": {
     "@types/js-yaml": "^3.12.0",
+    "axios": "^0.21.1",
     "chai-http": "^4.3.0",
+    "connect": "^3.7.0",
+    "ejs": "^3.1.6",
     "express": "^4.17.1",
-    "fabric-ca-client": "^1.4.4",
-    "fabric-client": "^1.4.2",
-    "fabric-network": "^1.4.4",
+    "fabric-ca-client": "^2.1.0",
+    "fabric-network": "^2.1.0",
+    "fs": "0.0.1-security",
     "grpc": "^1.6.0",
     "jquery-csv": "^1.0.11",
+    "js-yaml": "^4.1.0",
     "json-2-csv": "^3.7.6",
     "node-cache": "^5.1.0",
+    "papaparse": "^5.3.0",
     "tsc": "^1.20150623.0",
     "typescript": "^3.7.5"
   }

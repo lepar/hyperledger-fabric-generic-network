@@ -10,15 +10,8 @@ mkdir -p config/
 # remove previous crypto material and config transactions
 rm -fr config/*
 
-# generate genesis block for orderer
-configtxgen -profile OrdererGenesis -channelID system-channel -outputBlock ./config/genesis.block
-if [ "$?" -ne 0 ]; then
-  echo "Failed to generate orderer genesis block..."
-  exit 1
-fi
-
 # generate channel configuration transaction
-configtxgen -profile Channel -outputCreateChannelTx ./config/channel.tx -channelID $CHANNEL_NAME
+configtxgen -profile Channel -outputBlock ./config/channel.tx -channelID $CHANNEL_NAME
 if [ "$?" -ne 0 ]; then
   echo "Failed to generate channel configuration transaction..."
   exit 1
