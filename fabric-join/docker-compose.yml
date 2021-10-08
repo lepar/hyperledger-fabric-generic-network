@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-version: "2"
+version: "3"
 
 networks:
   fabric:
@@ -61,7 +61,6 @@ services:
     command: peer node start
     ports:
       - 7051:7051
-      - 7053:7053
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config/peerOrganizations/:/etc/hyperledger/peer
@@ -117,18 +116,14 @@ services:
 
   orderer:
     container_name: orderer.${DOMAIN_OF_ORGANIZATION}
-    image: hyperledger/fabric-orderer
+    image: hyperledger/fabric-orderer:2.3.1
     environment:
-      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - FABRIC_LOGGING_SPEC=grpc=debug:info
+      - FABRIC_LOGGING_SPEC=INFO
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LEDGERTYPE=file
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_LISTENPORT=7050
       - ORDERER_GENERAL_LOCALMSPID=${NAME_OF_ORGANIZATION}OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/orderer/msp
-      - FABRIC_CFG_PATH=/etc/hyperledger/ordererConfig
-      # Enable TLS
+      # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/orderer/tls/server.crt
@@ -136,14 +131,20 @@ services:
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_OPERATIONS_LISTENADDRESS=127.0.0.1:1443
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/etc/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/etc/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/etc/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/etc/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
     working_dir: /etc/hyperledger/
     command: orderer
     ports:
       - 7050:7050
+      - 7053:7053
     volumes:
-      - ./config/:/etc/hyperledger/configtx
       - ./crypto-config/ordererOrganizations/orderers/orderer.${DOMAIN_OF_ORGANIZATION}/:/etc/hyperledger/orderer
-      - ./ordererConfig:/etc/hyperledger/ordererConfig
     networks:
       - fabric

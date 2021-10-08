@@ -43,11 +43,11 @@ sed -e 's/organization_name/'$NAME_OF_ORGANIZATION'/g' -e 's/organization_domain
 docker-compose -p fabric-network -f docker-compose.yml up -d ca
 sleep 3
 
-docker exec ca.$DOMAIN_OF_ORGANIZATION /bin/bash -c "cd /etc/hyperledger/artifacts/  && ./orderer-identity.sh $CA_ADDRESS_PORT $DOMAIN_OF_ORGANIZATION $HOST_COMPUTER_IP_ADDRESS $CA_ADMIN_USER $CA_ADMIN_PASSWORD $ORDERER_PASSWORD"
+docker exec ca.$DOMAIN_OF_ORGANIZATION /bin/sh -c "cd /etc/hyperledger/artifacts/  && ./orderer-identity.sh $CA_ADDRESS_PORT $DOMAIN_OF_ORGANIZATION $HOST_COMPUTER_IP_ADDRESS $CA_ADMIN_USER $CA_ADMIN_PASSWORD $ORDERER_PASSWORD"
 
 
 # Generate identity and cryptographic materials for the peer 
-docker exec ca.$DOMAIN_OF_ORGANIZATION /bin/bash -c "cd /etc/hyperledger/artifacts/  && ./peer-identity.sh $CA_ADDRESS_PORT $DOMAIN_OF_ORGANIZATION $HOST_COMPUTER_IP_ADDRESS $PEER_PASSWORD"
+docker exec ca.$DOMAIN_OF_ORGANIZATION /bin/sh -c "cd /etc/hyperledger/artifacts/  && ./peer-identity.sh $CA_ADDRESS_PORT $DOMAIN_OF_ORGANIZATION $HOST_COMPUTER_IP_ADDRESS $PEER_PASSWORD"
 
 # Move the crypto-config folder to manipulate it more easily away from the dockers users' restrictions
 sudo mv ./${ORGANIZATION_NAME_LOWERCASE}Ca/client/crypto-config ./
@@ -77,7 +77,7 @@ sudo rm -rf $PEER_DIRECTORY/tls/{cacerts,keystore,signcerts,tlscacerts,user}
 # Start the network with docker-compose
 docker-compose -f docker-compose.yml up -d peer couchdb cli orderer
 
-sleep 30
+sleep 10
 
 mkdir identityFiles
 
