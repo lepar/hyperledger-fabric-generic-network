@@ -63,7 +63,7 @@ Application: &ApplicationDefaults
       Rule: "ANY Writers"
     Admins:
       Type: ImplicitMeta
-      Rule: "MAJORITY Admins"
+      Rule: "ANY Admins"
     LifecycleEndorsement:
       Type: Signature
       Rule: "OR('organization_nameMSP.member')"
@@ -112,7 +112,7 @@ Orderer: &OrdererDefaults
       Rule: "ANY Writers"
     Admins:
       Type: ImplicitMeta
-      Rule: "MAJORITY Admins"
+      Rule: "ANY Admins"
 
     BlockValidation:
       Type: ImplicitMeta

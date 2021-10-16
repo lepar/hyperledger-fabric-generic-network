@@ -61,11 +61,9 @@ function removeOrgChannel(){
     # Remove organizations IP Address
     jq '
         del(.channel_group.groups.Orderer.groups.'$NEW_ORG_NAME'OrdererMSP) |
-        .channel_group.values.OrdererAddresses.value.addresses |= map(select( test('\"$NEW_ORDERER_URL\"') | not)) | 
-        del(.channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters[] | select(.port == 7050))
+        .channel_group.values.OrdererAddresses.value.addresses |= map(select( test('\"$ORGANIZATION_IP\"') | not)) | 
+        del(.channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters[] | select(.host == '\"$ORGANIZATION_IP\"'))
     ' $TEMP_DIRECTORY/config2.json > $TEMP_DIRECTORY/modified_config_final.json
-
-
 }
 
 function sendUpdate(){
@@ -83,7 +81,9 @@ function sendUpdate(){
     configtxlator proto_encode --input org_update_in_envelope.json --type common.Envelope --output org_update_in_envelope.pb
 
     peer channel signconfigtx -f org_update_in_envelope.pb
-
+    
+    export CORE_PEER_LOCALMSPID=${ORG_ADMIN}OrdererMSP
+    
     peer channel update -f org_update_in_envelope.pb -c $CHANNEL -o orderer1.$ORGANIZATION_DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/orderers/orderer1.$ORGANIZATION_DOMAIN/tls/ca.crt
 
 }
